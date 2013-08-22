@@ -1,5 +1,6 @@
 ﻿<!doctype html>
 <html lang="pt-br">
+    
     <head>
         <meta charset="utf-8">
         <title>.:::: VulpixES.com - Seja Bem Vindo ::::.</title>
@@ -7,11 +8,9 @@
     </head>
 
     <body>
-
-        <form method="post" action="valida.php">
+        <form method="post" action="../controller/validarLogin.php">
             <label>Login</label>
             <input type="text" name="login" maxlength="50" />
-
             <label>Senha</label>
             <input type="password" name="password" maxlength="50" />
             <input type="checkbox" name="connectOn"/>Mantenha-me conectado

@@ -1,15 +1,16 @@
 <?php
 
+session_start();
+
 require_once '../model/ModelConexao.php';
 
 class ControllerValidaLogin {
 
     public function __construct() {
+        
     }
 
     public function validarLogin() {
-        session_start();
-
         if (isset($_POST['login'])) {
             $login = $_POST['login'];
         }

@@ -1,21 +1,27 @@
+<?php
+session_start();
+
+//if (!isset($_COOKIE["connectOn"])){
+  //echo $_COOKIE["connectOn"];
+//}
+
+require_once './StructDefault.php';
+?>
 ﻿<!doctype html>
 <html lang="pt-br">
 
     <head>
         <meta charset="utf-8">
         <title>.:::: VulpixES.com - Seja Bem Vindo ::::.</title>
+        <link rel="stylesheet" href="../style/structDefault.css" type="text/css" />
         <link rel="stylesheet" href="../style/login.css" type="text/css" />
     </head>
 
     <body>
-        <div id="topo">
-
-            <div class="cAlign">
-                <a href="#"><img src="../Images/logo.png" alt="VulpixEx.com" /> </a><span><a href="./cadastro.php">Criar Conta<a href="#">Contato<a href="#">Sobre</a></a></a></span>
-            </div><!--cAlign-->
-
-        </div><!--topo-->
-
+        <?php
+        echo StructDefault::createHead("<a href='./cadastro.php'>Criar Conta<a href='#'>Contato<a href='#'>Sobre</a></a></a>");
+        ?>        
+        
         <div id="panelCenter">
             <form method="post" action="../controller/validarLogin.php">
                 <div id="campos">
@@ -27,6 +33,12 @@
                 </div><br />
                 <input type="submit" class="button" value="Entrar" />
             </form>
+            <?php
+            if (isset($_SESSION['login_error'])) {
+                echo "<span style='font-size:1.3em;color: red;'>", $_SESSION['login_error'], "</span>";
+            }
+            ?>
+            <br />
             <span id="link"><a href="">Esqueceu a senha?</a></span>
         </div>
     </body>

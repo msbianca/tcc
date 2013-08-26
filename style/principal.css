@@ -1,0 +1,64 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    text-align: center;
+    color: #000;
+    font: 12px Verdana, sans-serif;
+}
+
+#site {
+    width: 997px;
+    margin: 0 auto;
+}
+
+#esquerda {
+    background: #8C0000;
+    float: left;
+    width: 200px;
+    height: 600px;
+}
+
+#direita {
+    background: #FFF;
+    float: right;
+    width: 797px;
+    height: 600px;
+}
+
+#rodape {
+    clear: both;
+    height: 20px;
+    background: #8C0000;
+    color: #FFF;
+}
+
+#menu {
+    width: 100%;
+    margin: 0; padding: 0;
+    float: left;
+}
+
+#menu ul li {
+    margin: 0; padding: 0px;
+    border-bottom: 1px solid #CCC;
+    text-align: left;
+    list-style-type: none;
+    font-size:1.4em;
+}
+
+#menu a:link {
+    background: #F5F5F5;
+    color: #666;
+    font-weight: bold;
+    text-decoration: none;
+    padding: 12px;
+    display: block;
+}
+
+#menu a:hover {
+    background: #E5F0FF;
+    color: #039;
+}                

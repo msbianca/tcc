@@ -1,0 +1,13 @@
+*{margin:0; padding:0;}
+
+div#topo{background:#8C0000; padding:0.3em 0; overflow:hidden;}
+div#topo img{float:left;}
+div#topo span{float:right;margin-top:7px; }
+div#topo span a{font-size:1.5em; margin-right:2px; padding:0.5em 1em; color:#FF0;}
+
+.cAlign{min-width:240px; max-width:1200px; width:95%; margin:0 auto;}
+
+body{background-image:url(../Images/fundo.jpg); 
+     font-size:62.5%; 
+     font-family:Segoe, "Segoe UI", "DejaVu Sans", "Trebuchet MS", Verdana, sans-serif; 
+     color:#333;}

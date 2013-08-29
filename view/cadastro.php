@@ -23,7 +23,7 @@ require_once './StructDefault.php';
                 <h1>Cadastra-se, <span>é grátis...</span></h1>
 
                 <div id="formulario">
-                    <form name="cadastro" method="post" action="">
+                    <form name="cadastro" method="post" action="../controller/criarConta.php">
                         <div>
                             <div class="inputFloat">
                                 <span>Nome</span> 
@@ -77,7 +77,7 @@ require_once './StructDefault.php';
 
                         <div>
                             <div class="captchaFloat">
-                                <img src="../captcha/captcha.php" />
+                                <img src="../captcha/captcha.php?l=150&a=50&tf=20&ql=5" />
                             </div>
 
                             <div class="inputFloat">

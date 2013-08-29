@@ -1,23 +1,26 @@
-﻿<?php
-	session_start();
-		
-	header("Content-type: image/jpg");
-	
-	$image = imagecreate(200,70);
-	$fonte = 'arial.ttf';
-	$corFundo = imagecolorallocate($image,255,255,255);
-	$corLetra = imagecolorallocate($image,255,0,0);	
-	
-	$tFonte = '50';
-	$qtLetras = 4;
-	
-	$palavras = substr(str_shuffle("AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvYyXxWwZz23456789"),0,$qtLetras);
-	
-	$_SESSION['captchaCadastro'] = $palavras;
-	
-	for($i=1;$i<=$qtLetras;$i++){
-		imagettftext($image,$tFonte,rand(-30,25),(($tFonte*$i)/1.5),$tFonte+5,$corLetra,$fonte,substr($palavras,($i-1),1));
-	}
-	
-	imagejpeg($image);
-	imagedestroy($image);
+<?php
+   session_start(); // inicial a sessao
+   header("Content-type: image/jpeg"); // define o tipo do arquivo
+    
+    function captcha($largura,$altura,$tamanho_fonte,$quantidade_letras){
+        $imagem = imagecreate($largura,$altura); // define a largura e a altura da imagem
+        $fonte = "arial.ttf"; //voce deve ter essa ou outra fonte de sua preferencia em sua pasta
+        $preto  = imagecolorallocate($imagem,0,0,0); // define a cor preta
+        $branco = imagecolorallocate($imagem,255,255,255); // define a cor branca
+        
+        // define a palavra conforme a quantidade de letras definidas no parametro $quantidade_letras
+        $palavra = substr(str_shuffle("AaBbCcDdEeFfGgHhIiJjKkLlMmNnPpQqRrSsTtUuVvYyXxWwZz23456789"),0,($quantidade_letras)); 
+        $_SESSION["palavra_captcha"] = $palavra; // atribui para a sessao a palavra gerada
+        for($i = 1; $i <= $quantidade_letras; $i++){ 
+            imagettftext($imagem,$tamanho_fonte,rand(-25,25),($tamanho_fonte*$i),($tamanho_fonte + 10),$branco,$fonte,substr($palavra,($i-1),1)); // atribui as letras a imagem
+        }
+        imagejpeg($imagem); // gera a imagem
+        imagedestroy($imagem); // limpa a imagem da memoria
+    }
+    
+    $largura = $_GET["l"]; // recebe a largura
+    $altura = $_GET["a"]; // recebe a altura
+    $tamanho_fonte = $_GET["tf"]; // recebe o tamanho da fonte
+    $quantidade_letras = $_GET["ql"]; // recebe a quantidade de letras que o captcha terá
+    captcha($largura,$altura,$tamanho_fonte,$quantidade_letras); // executa a funcao captcha passando os parametros recebidos
+?>

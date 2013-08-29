@@ -21,6 +21,17 @@ class ModelConexao {
         return self::$instance;
     }
 
+    public static function gravarDados($campos, $tabela, $valores) {
+        //obtem a instancia atual
+        $instance = self::getInstance();
+
+        if (!mysqli_query($instance->bd_conexao, "insert into $tabela ($campos) values ($valores)")) {
+            die('Erro: ' . mysqli_error($instance->bd_conexao));
+            exit;
+        }
+        return true;
+    }
+
     public static function executarFiltro($campos, $tabela, $condicao) {
         //obtem a instancia atual
         $instance = self::getInstance();

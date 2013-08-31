@@ -9,7 +9,7 @@
         $branco = imagecolorallocate($imagem,255,255,255); // define a cor branca
         
         // define a palavra conforme a quantidade de letras definidas no parametro $quantidade_letras
-        $palavra = substr(str_shuffle("AaBbCcDdEeFfGgHhIiJjKkLlMmNnPpQqRrSsTtUuVvYyXxWwZz23456789"),0,($quantidade_letras)); 
+        $palavra = substr(str_shuffle("ABCDEFGHIJKLMNPQRSTUVYXWZ23456789"),0,($quantidade_letras)); 
         $_SESSION["palavra_captcha"] = $palavra; // atribui para a sessao a palavra gerada
         for($i = 1; $i <= $quantidade_letras; $i++){ 
             imagettftext($imagem,$tamanho_fonte,rand(-25,25),($tamanho_fonte*$i),($tamanho_fonte + 10),$branco,$fonte,substr($palavra,($i-1),1)); // atribui as letras a imagem

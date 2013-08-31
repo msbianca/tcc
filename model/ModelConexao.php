@@ -26,10 +26,11 @@ class ModelConexao {
         $instance = self::getInstance();
 
         if (!mysqli_query($instance->bd_conexao, "insert into $tabela ($campos) values ($valores)")) {
-            die('Erro: ' . mysqli_error($instance->bd_conexao));
-            exit;
+//            die('Erro: ' . mysqli_error($instance->bd_conexao));
+            return false;
+        } else {
+            return true;
         }
-        return true;
     }
 
     public static function executarFiltro($campos, $tabela, $condicao) {

@@ -14,7 +14,7 @@ require_once './StructDefault.php';
 
     <body>
         <?php
-        echo StructDefault::createHead("<a href='#'>Contato<a href='#'>Sobre</a></a>");
+        echo StructDefault::createHead("<a href='./cadastro.php'>Criar Conta<a href='./sobre.php'>Sobre</a></a>");
         ?> 
 
         <div class="cAlign">
@@ -46,14 +46,22 @@ require_once './StructDefault.php';
                         <span>Data de nascimento</span>           
                         <input type="date" name="data_nasc" required="required" class="inputTxt"/>                        	
 
+                        <span>Sua Biografia</span>
+                        <input type="text" name="bio" required="required" class="inputTxt"/>                        	
+                        
                         <span>E-mail</span> 
                         <input type="email" name="email" required="required" class="inputTxt"/>                        	
+                        <div>
+                        <div class="inputFloat">
+                            <span>Login</span> 
+                            <input type="text" name="login" required="required" class="inputTxt"/>   
+                        </div>
 
-                        <span>Login</span> 
-                        <input type="text" name="login" required="required" class="inputTxt"/>   
-
-                        <span>Senha</span> 
-                        <input type="password" name="senha" required="required" class="inputTxt"/>                        	
+                        <div class="inputFloat">
+                            <span>Senha</span> 
+                            <input type="password" name="senha" required="required" class="inputTxt"/>                        	
+                        </div>
+                </div>
 
                         <div>
                             <div class="captchaFloat">

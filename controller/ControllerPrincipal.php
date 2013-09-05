@@ -1,8 +1,8 @@
 <?php
 
-session_start();
-
 require_once '../model/ModelConexao.php';
+require_once '../model/Pessoa.class.php';
+require_once '../model/Publicacao.class.php';
 
 class ControllerPrincipal {
 
@@ -21,8 +21,12 @@ class ControllerPrincipal {
         }
 
 //utiliza uma função para validar os dados digitados
-        ModelConexao::executarFiltro("p.*", "pessoa p", "(p.login = '$login') and (p.senha = '$password')");
+        $result = ModelConexao::executarFiltro("p.idpessoa, p.nome, p.sobrenome, p.data_nascimento, p.login, p.email, 
+                                                p.auto_definicao, p.total_amigos", "pessoa p", "(p.login = '$login') and (p.senha = '$password')");
         if (ModelConexao::totalRegistroFiltrados() == 1) {
+            $row = $result->fetch_object();
+            $_SESSION['idpessoa_logado'] = $row->idpessoa;
+
 //cria cookie caso é para ficar conectado
 //            if ((isset($_POST['connectOn'])) && (isset($_COOKIE["connectOn"]))) {
 //              setcookie("connectOn", "true", time() + 3600);
@@ -36,6 +40,7 @@ class ControllerPrincipal {
 //manda para página inicial da rede
             header("Location: ../view/principal.php");
         } else {
+            $_SESSION['idpessoa_logado'] = "";
 //registra mensagem de erro ao logar
             $_SESSION['login_error'] = "~~> Login ou senha incorretos <~~";
 //o usuário e/ou a senha são inválidos, manda para página de erro
@@ -60,6 +65,12 @@ class ControllerPrincipal {
             $this->msgErrorFiledsNull("~~> Digite a data de nascimento <~~");
         } else {
             $data_nasc = $_POST['data_nasc'];
+        }
+
+        if (!isset($_POST['bio']) && (empty($_POST['bio']))) {
+            $this->msgErrorFiledsNull("~~> Digite sua biografia <~~");
+        } else {
+            $bio = $_POST['bio'];
         }
 
         if (!isset($_POST['email']) && (empty($_POST['email']))) {
@@ -87,9 +98,7 @@ class ControllerPrincipal {
             }
         }
 
-        if (ModelConexao::gravarDados("NOME, SOBRENOME, DATA_NASCIMENTO, LOGIN,
-                                    SENHA, EMAIL, TOTAL_AMIGOS", "pessoa", "'$nome', '$sobrenome', '$data_nasc', '$login', '$senha',
-                                    '$email', 0")) {
+        if (ModelConexao::gravarDados("NOME, SOBRENOME, DATA_NASCIMENTO, LOGIN, SENHA, AUTO_DEFINICAO, EMAIL, TOTAL_AMIGOS", "pessoa", "'$nome', '$sobrenome', '$data_nasc', '$login', '$senha', '$bio', '$email', 0")) {
             $_SESSION['msg_error_fields_null'] = "";
             echo "<script>alert('Cadastro realizado com sucesso...');window.location='../View/principal.php'</script>";
         } else {
@@ -97,13 +106,75 @@ class ControllerPrincipal {
         }
     }
 
+    public function publicarMensagem() {
+        if (isset($_POST['publicacao'])) {
+            $publicacao = $_POST['publicacao'];
+        }
+        $idpessoa = -1;
+
+        if (isset($_SESSION['idpessoa_logado'])) {
+            $idpessoa = $_SESSION['idpessoa_logado'];
+        }
+        $data = date('Y-m-d H:i:s');
+
+        if (ModelConexao::gravarDados("IDPESSOA, DATA_HORA, PUBLICACAO", "publicacao", "'$idpessoa', '$data', '$publicacao'")) {
+            echo "<script>alert('Mensagem publicada com sucesso...');window.location='../View/publicacao.php'</script>";
+        } else {
+            echo "<script>alert('Erro ao publicadar mensagem...');window.location='../View/publicacao.php'</script>";
+        }
+    }
+
+    public function mostrarInfoPerfil($idpessoa) {
+        $result = ModelConexao::executarFiltro("p.idpessoa, p.nome, p.sobrenome, p.data_nascimento, p.login, p.email, 
+                                                p.auto_definicao, p.total_amigos", "pessoa p", "(p.idpessoa = '$idpessoa')");
+        $row = $result->fetch_object();
+
+        return new Pessoa($row->idpessoa, $row->nome, $row->sobrenome, $row->data_nascimento, $row->login, $row->email, $row->auto_definicao, $row->total_amigos);
+    }
+
+    public function mostrarPublicacoes($idpessoa) {
+        $result = ModelConexao::executarFiltro("p.idpublicacao, p.data_hora, p.publicacao", "publicacao p", "(p.idpessoa = '$idpessoa') order by p.data_hora desc");
+
+        $result_array;
+        $i = 0;
+
+        if (ModelConexao::totalRegistroFiltrados() > 0) {
+            while ($row = $result->fetch_object()) {
+                $result_array[$i] = new Publicacao($row->idpublicacao, $row->data_hora, $row->publicacao);
+                $i++;
+            }
+            return $result_array;
+        } else {
+            return null;
+        }
+    }
+
     private function msgErrorFiledsNull($msgError) {
-        //registra mensagem de erro 
+//registra mensagem de erro 
         $_SESSION['msg_error_fields_null'] = $msgError;
-        //retorna no cadastro
+//retorna no cadastro
         header("Location: ../view/cadastro.php");
         exit;
     }
 
+    function montarLink($texto) {
+        if (!is_string($texto))
+            return $texto;
+
+        $er = "/(http(s)?:\/\/(www|.*?\/)?((\.|\/)?[a-zA-Z0-9&%_?=-]+)+)/i";
+        preg_match_all($er, $texto, $match);
+
+        foreach ($match[0] as $link) {
+            $link = strtolower($link);
+            $link_len = strlen($link);
+
+            //troca "&" por "&amp;", tornando o link válido pela W3C
+            $web_link = str_replace("&", "&amp;", $link);
+
+            $texto = str_ireplace($link, "<a href=\"" . $web_link . "\" target=\"_blank\" title=\"" . $web_link . "\" rel=\"nofollow\">" . (($link_len > 60) ? substr($web_link, 0, 25) . "..." . substr($web_link, -15) : $web_link) . "</a>", $texto);
+        }
+
+        return $texto;
+    }
+
 }
-?>

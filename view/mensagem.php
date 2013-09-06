@@ -72,7 +72,7 @@ require_once '../controller/ControllerPrincipal.php';
                             echo "<table border='0'>";
                             echo "<tr>";
                             echo "<td align='center' style=background-color:silver;color:black;font-size:1.3em;font-weight:bold;> ", date('d/m/y H:m:s', strtotime($mensagens[$i]->getDataHora())), " </td>";
-                            echo "<td align='center' style=background-color:silver;color:black;font-size:1.3em;font-weight:bold;> ", $mensagens[$i]->getNomePessoa(), " </td>";
+                            echo "<td align='center' style=background-color:silver;color:black;font-size:1.3em;font-weight:bold;><a href='perfilAmigo.php?id=", $mensagens[$i]->getIdpessoa(), "'> ", $mensagens[$i]->getNomePessoa(), " </a></td>";
                             echo "<td align='center' style=background-color:silver;color:black;font-size:1.5em;> ", $controller->montarLink($mensagens[$i]->getMensagem()), " </td>";
                             echo "</tr>";
                             echo "</table>";

@@ -183,14 +183,14 @@ class ControllerPrincipal {
             $idjoinPessoa = 'm.idpessoa_receb';
         }
 
-        $result = ModelConexao::executarFiltro("m.idmensagem, m.data_hora, m.mensagem, p.nome, p.sobrenome", "mensagem m inner join pessoa p on (p.idpessoa = $idjoinPessoa)", "($mensReceb = '$idpessoa') order by m.data_hora desc");
+        $result = ModelConexao::executarFiltro("m.idmensagem, m.data_hora, m.mensagem, p.idpessoa, p.nome, p.sobrenome", "mensagem m inner join pessoa p on (p.idpessoa = $idjoinPessoa)", "($mensReceb = '$idpessoa') order by m.data_hora desc");
 
         $result_array;
         $i = 0;
 
         if (ModelConexao::totalRegistroFiltrados() > 0) {
             while ($row = $result->fetch_object()) {
-                $result_array[$i] = new Mensagem($row->idmensagem, $row->data_hora, $row->mensagem, ($row->nome . " " . $row->sobrenome));
+                $result_array[$i] = new Mensagem($row->idmensagem, $row->data_hora, $row->mensagem, $row->idpessoa, ($row->nome . " " . $row->sobrenome));
                 $i++;
             }
             return $result_array;

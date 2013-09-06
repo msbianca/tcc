@@ -15,12 +15,14 @@ class Mensagem {
     private $idmensagem;
     private $dataHora;
     private $mensagem;
+    private $idpessoa;
     private $nomePessoa;
 
-    public function __construct($idmensagem, $dataHora, $mensagem, $nomePessoa) {
+    public function __construct($idmensagem, $dataHora, $mensagem, $idpessoa, $nomePessoa) {
         $this->idmensagem = $idmensagem;
         $this->dataHora = $dataHora;
         $this->mensagem = $mensagem;
+        $this->idpessoa = $idpessoa;
         $this->nomePessoa = $nomePessoa;
     }
 
@@ -34,6 +36,10 @@ class Mensagem {
 
     public function getMensagem() {
         return $this->mensagem;
+    }
+    
+    public function getIdpessoa() {
+        return $this->idpessoa;
     }
     
     public function getNomePessoa() {

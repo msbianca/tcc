@@ -7,7 +7,7 @@ if (!isset($_SESSION['login'])) {
     header("Location: ./login.php");
 }
 
-require_once './StructDefault.php';
+require_once './StructDefault.class.php';
 require_once '../controller/ControllerPrincipal.php';
 ?>
 <!doctype html>
@@ -24,17 +24,9 @@ require_once '../controller/ControllerPrincipal.php';
         ?>
 
         <div id="site">
-            <div id="esquerda">
-                <div id="menu">
-                    <ul>
-                        <li><a href="principal.php">Perfil</a></li>
-                        <li><a href="publicacao.php">Publicações</a></li>
-                        <li><a href="mensagem.php">Mensagens</a></li>
-                        <li><a href="amigo.php">Amigos</a></li>
-                        <li><a href="solicitacao.php">Solicitações</a></li>
-                    </ul>
-                </div>
-            </div>
+            <?php
+            echo StructDefault::createMenu();
+            ?>
 
             <div id="direita">
                 <br />
@@ -51,7 +43,7 @@ require_once '../controller/ControllerPrincipal.php';
 
                     $amigos = $controller->mostrarAmigos($idpessoa);
                     $i = 0;
-
+                    echo "<span style=font-size:1.3em;font-weight:bold;>Para: </span>";
                     echo "<select name='amigo' required='required'>";
                     while ($i < ModelConexao::totalRegistroFiltrados()) {
                         echo "<option value=", $amigos[$i]->getIdpessoaAmigo(), ">", $amigos[$i]->getNomeAmigo(), "</option>";
@@ -63,7 +55,7 @@ require_once '../controller/ControllerPrincipal.php';
                     <textarea maxlength="200" name="mensagem" required="required" cols="50" rows="3" style="width: 480px; margin: 2px 0px; height: 93px;"></textarea><br />
                     <input type="submit" value="  Enviar  ">
                 </form>
-                <br /><br />
+                <br /><br /><hr /><br />
                 <?php
                 $inc = 0;
                 $tipoMensagem = 'Enviadas';
@@ -71,20 +63,25 @@ require_once '../controller/ControllerPrincipal.php';
                 while ($inc < 2) {
                     echo "<h2>Mensagens $tipoMensagem</h2><br />";
                     $mensagens = $controller->mostrarMensagens($idpessoa, $mensagemReceb);
-                    $i = 0;
-                    while ($i < ModelConexao::totalRegistroFiltrados()) {
-                        echo "<div style='width:700px; height: 44px; overflow: auto;'>";
-                        echo "<table border='0'>";
-                        echo "<tr>";
-                        echo "<td align='center' style=background-color:silver;color:black;font-size:1.3em;font-weight:bold;> ", date('d/m/y H:m:s', strtotime($mensagens[$i]->getDataHora())), " </td>";
-                        echo "<td align='center' style=background-color:silver;color:black;font-size:1.3em;font-weight:bold;> ", $mensagens[$i]->getNomePessoa(), " </td>";
-                        echo "<td align='center' style=background-color:silver;color:black;font-size:1.5em;> ", $controller->montarLink($mensagens[$i]->getMensagem()), " </td>";
-                        echo "</tr>";
-                        echo "</table>";
-                        echo "</div>";
+                    if (ModelConexao::totalRegistroFiltrados() == 0) {
+                        echo "<span style=color:red;font-size:1.3em;>~~> Nenhuma mensagem <~~</span><br /><br />";
+                    } else {
+                        $i = 0;
+                        while ($i < ModelConexao::totalRegistroFiltrados()) {
+                            echo "<div style='width:700px; height: 44px; overflow: auto;'>";
+                            echo "<table border='0'>";
+                            echo "<tr>";
+                            echo "<td align='center' style=background-color:silver;color:black;font-size:1.3em;font-weight:bold;> ", date('d/m/y H:m:s', strtotime($mensagens[$i]->getDataHora())), " </td>";
+                            echo "<td align='center' style=background-color:silver;color:black;font-size:1.3em;font-weight:bold;> ", $mensagens[$i]->getNomePessoa(), " </td>";
+                            echo "<td align='center' style=background-color:silver;color:black;font-size:1.5em;> ", $controller->montarLink($mensagens[$i]->getMensagem()), " </td>";
+                            echo "</tr>";
+                            echo "</table>";
+                            echo "</div>";
 
-                        $i++;
+                            $i++;
+                        }
                     }
+                    echo "<hr /><br />";
                     $tipoMensagem = 'Recebidas';
                     $mensagemReceb = true;
                     $inc++;
@@ -92,9 +89,9 @@ require_once '../controller/ControllerPrincipal.php';
                 ?>
             </div>
 
-            <div id="rodape">
-                <p>&copy;Copyright VulpixEX.com 2013 - Todos os direitos reservados.</p>
-            </div>
+            <?php
+            echo StructDefault::createFooter();
+            ?>            
         </div>
 
     </body>

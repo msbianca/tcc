@@ -18,14 +18,14 @@ body {
     background: #8C0000;
     float: left;
     width: 200px;
-    height: 600px;
+    height: 800px;
 }
 
 #direita {
     background: #FFF;
     float: right;
     width: 797px;
-    height: 600px;
+    height: 800px;
 }
 
 #rodape {
@@ -61,4 +61,4 @@ body {
 #menu a:hover {
     background: #E5F0FF;
     color: #039;
-}                
+}

@@ -1,0 +1,27 @@
+#amigos {
+    width: 100%;
+    margin: 0; padding: 0;
+    float: left;
+}
+
+#amigos ul li {
+    margin: 0; padding: 0px;
+    border-bottom: 1px solid #FFF;
+    text-align: left;
+    list-style-type: none;
+    font-size:1.4em;
+}
+
+#amigos a:link {
+    background: tan;
+    color: white;
+    font-weight: bold;
+    text-decoration: none;
+    padding: 5px;
+    display: block;
+}
+
+#amigos a:hover {
+    background: #E5F0FF;
+    color: #037;
+}                

@@ -125,16 +125,16 @@ class ControllerPrincipal {
             echo "<script>alert('Erro ao publicar conteúdo...');window.location='../View/publicacao.php'</script>";
         }
     }
-    
+
     public function publicarMensagem() {
         if (isset($_POST['amigo'])) {
             $idpessoa_amigo = $_POST['amigo'];
         }
-        
+
         if (isset($_POST['mensagem'])) {
             $mensagem = $_POST['mensagem'];
         }
-        
+
         $idpessoa = -1;
 
         if (isset($_SESSION['idpessoa_logado'])) {
@@ -147,7 +147,7 @@ class ControllerPrincipal {
         } else {
             echo "<script>alert('Erro ao enviar mensagem...');window.location='../View/mensagem.php'</script>";
         }
-    }    
+    }
 
     public function mostrarInfoPerfil($idpessoa) {
         $result = ModelConexao::executarFiltro("p.idpessoa, p.nome, p.sobrenome, p.data_nascimento, p.login, p.email, 
@@ -182,10 +182,8 @@ class ControllerPrincipal {
             $mensReceb = 'm.idpessoa_envio';
             $idjoinPessoa = 'm.idpessoa_receb';
         }
-        
-        $result = ModelConexao::executarFiltro("m.idmensagem, m.data_hora, m.mensagem, p.nome, p.sobrenome", 
-                                               "mensagem m inner join pessoa p on (p.idpessoa = $idjoinPessoa)", 
-                                               "($mensReceb = '$idpessoa') order by m.data_hora desc");
+
+        $result = ModelConexao::executarFiltro("m.idmensagem, m.data_hora, m.mensagem, p.nome, p.sobrenome", "mensagem m inner join pessoa p on (p.idpessoa = $idjoinPessoa)", "($mensReceb = '$idpessoa') order by m.data_hora desc");
 
         $result_array;
         $i = 0;
@@ -200,11 +198,9 @@ class ControllerPrincipal {
             return null;
         }
     }
-    
+
     public function mostrarAmigos($idpessoa) {
-        $result = ModelConexao::executarFiltro("a.idamigo, a.idpessoa_amigo, p.nome, p.sobrenome", 
-                                               "amigo a inner join pessoa p on (p.idpessoa = a.idpessoa_amigo)", 
-                                               "(a.idpessoa = '$idpessoa') order by p.nome, p.sobrenome");
+        $result = ModelConexao::executarFiltro("a.idamigo, a.idpessoa_amigo, p.nome, p.sobrenome", "amigo a inner join pessoa p on (p.idpessoa = a.idpessoa_amigo)", "(a.idpessoa = '$idpessoa') order by p.nome, p.sobrenome");
 
         $result_array;
         $i = 0;
@@ -218,7 +214,30 @@ class ControllerPrincipal {
         } else {
             return null;
         }
-    }    
+    }
+
+    public function procurarAmigos($nome) {
+        $idpessoa = -1;
+
+        if (isset($_SESSION['idpessoa_logado'])) {
+            $idpessoa = $_SESSION['idpessoa_logado'];
+        }
+
+        $result = ModelConexao::executarFiltro("p.idpessoa, p.nome, p.sobrenome", "PESSOA P", "((P.IDPESSOA <> '$idpessoa') AND ((P.NOME LIKE '%$nome%') or (P.SOBRENOME LIKE '%$nome%') ) )");
+
+        $result_array;
+        $i = 0;
+
+        if (ModelConexao::totalRegistroFiltrados() > 0) {
+            while ($row = $result->fetch_object()) {
+                $result_array[$i] = new Pessoa($row->idpessoa, $row->nome, $row->sobrenome, null, null, null, null, null, null);
+                $i++;
+            }
+            return $result_array;
+        } else {
+            return null;
+        }
+    }
 
     private function msgErrorFiledsNull($msgError) {
 //registra mensagem de erro 

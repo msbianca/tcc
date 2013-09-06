@@ -33,10 +33,11 @@ require_once '../controller/ControllerPrincipal.php';
                 $controller = new ControllerPrincipal();
                 $idpessoa = -1;
 
-                if (isset($_SESSION['idpessoa_logado'])) {
-                    $idpessoa = $_SESSION['idpessoa_logado'];
+                if (isset($_GET['id'])) {
+                    $idpessoa = $_GET['id'];
                 }
 
+                //mostra perfil
                 $pessoa = $controller->mostrarInfoPerfil($idpessoa);
                 echo '<br />';
                 echo "<span style='font-size:2.8em;color: black;font-weight:bold;'>", $pessoa->getNome(), " ", $pessoa->getSobrenome(), "</span>";
@@ -52,6 +53,33 @@ require_once '../controller/ControllerPrincipal.php';
                 echo '<br />';
                 echo '<br />';
                 echo "<h2>Bio: </h2><span style='font-size:1.5em;color: black;'>", $pessoa->getAutoDefinicao(), "</span>";
+
+                //mostra publicações
+                echo "<br /><br /><br /><hr /><br /><h1>Publicações:</h1><br />";
+                $publicacao = $controller->mostrarPublicacoes($idpessoa);
+                if (ModelConexao::totalRegistroFiltrados() == 0) {
+                    echo "<span style=color:red;font-size:1.3em;>~~> Nenhuma publicação <~~</span><br /><br />";
+                } else {
+                    $i = 0;
+                    while ($i < ModelConexao::totalRegistroFiltrados()) {
+                        echo "<div style='width:700px; height: 44px; overflow: auto;'>";
+                        echo "<table border='0'>";
+                        echo "<tr>";
+                        echo "<td align='center' style=background-color:silver;color:black;font-size:1.3em;font-weight:bold;> ", date('d/m/y H:m:s', strtotime($publicacao[$i]->getDataHora())), " </td>";
+                        echo "<td align='center' style=background-color:silver;color:black;font-size:1.5em;> ", $controller->montarLink($publicacao[$i]->getPublicacao()), " </td>";
+                        echo "</tr>";
+                        echo "</table>";
+                        echo "</div>";
+
+                        $i++;
+                    }
+                }
+                echo "<hr /><br />";
+
+                //amigos em comum
+                echo "<h1>Amigos em comum:</h1><br />";
+                echo "<span style=color:red;font-size:1.3em;>~~> Nenhum amigo em comum <~~</span><br /><br />";
+                echo "<hr /><br />";
                 ?>          
             </div>
 

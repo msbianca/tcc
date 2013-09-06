@@ -7,7 +7,7 @@ if (!isset($_SESSION['login'])) {
     header("Location: ./login.php");
 }
 
-require_once './StructDefault.php';
+require_once './StructDefault.class.php';
 require_once '../controller/ControllerPrincipal.php';
 ?>
 <!doctype html>
@@ -24,35 +24,29 @@ require_once '../controller/ControllerPrincipal.php';
         ?>
 
         <div id="site">
-            <div id="esquerda">
-                <div id="menu">
-                    <ul>
-                        <li><a href="principal.php">Perfil</a></li>
-                        <li><a href="publicacao.php">Publicações</a></li>
-                        <li><a href="mensagem.php">Mensagens</a></li>
-                        <li><a href="amigo.php">Amigos</a></li>
-                        <li><a href="solicitacao.php">Solicitações</a></li>
-                    </ul>
-                </div>
-            </div>
+            <?php
+            echo StructDefault::createMenu();
+            ?>
 
             <div id="direita">
-                <div id="entradaDados">
-                    <br />
-                    <h1>Publicar Conteúdo</h1>
-                    <form name="publicacoes" action="../controller/publicarConteudo.php" method="POST">
-                        <textarea maxlength="200" name="publicacao" required="required" cols="50" rows="3" style="width: 480px; margin: 2px 0px; height: 93px;"></textarea><br />
-                        <input type="submit" value="  Publicar  ">
-                    </form>
-                    <br /><br />
-                    <?php
-                    $controller = new ControllerPrincipal();
-                    $idpessoa = -1;
+                <br />
+                <h1>Publicar Conteúdo</h1>
+                <form name="publicacoes" action="../controller/publicarConteudo.php" method="POST">
+                    <textarea maxlength="200" name="publicacao" required="required" cols="50" rows="3" style="width: 480px; margin: 2px 0px; height: 93px;"></textarea><br />
+                    <input type="submit" value="  Publicar  ">
+                </form>
+                <br /><br /><hr /><br />
+                <?php
+                $controller = new ControllerPrincipal();
+                $idpessoa = -1;
 
-                    if (isset($_SESSION['idpessoa_logado'])) {
-                        $idpessoa = $_SESSION['idpessoa_logado'];
-                    }
-                    $publicacao = $controller->mostrarPublicacoes($idpessoa);
+                if (isset($_SESSION['idpessoa_logado'])) {
+                    $idpessoa = $_SESSION['idpessoa_logado'];
+                }
+                $publicacao = $controller->mostrarPublicacoes($idpessoa);
+                if (ModelConexao::totalRegistroFiltrados() == 0) {
+                    echo "<span style=color:red;font-size:1.3em;>~~> Nenhuma publicação <~~</span><br /><br />";
+                } else {
                     $i = 0;
                     while ($i < ModelConexao::totalRegistroFiltrados()) {
                         echo "<div style='width:700px; height: 44px; overflow: auto;'>";
@@ -66,13 +60,13 @@ require_once '../controller/ControllerPrincipal.php';
 
                         $i++;
                     }
-                    ?>
-                </div>
+                }
+                ?>
             </div>
 
-            <div id="rodape">
-                <p>&copy;Copyright VulpixEX.com 2013 - Todos os direitos reservados.</p>
-            </div>
+            <?php
+            echo StructDefault::createFooter();
+            ?>            
         </div>
 
     </body>

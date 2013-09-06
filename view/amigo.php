@@ -7,7 +7,8 @@ if (!isset($_SESSION['login'])) {
     header("Location: ./login.php");
 }
 
-require_once './StructDefault.php';
+require_once './StructDefault.class.php';
+require_once '../controller/ControllerPrincipal.php';
 ?>
 <!doctype html>
 <html lang="pt-br">
@@ -16,6 +17,7 @@ require_once './StructDefault.php';
         <title>VulpixES.com - Amigos</title>
         <link rel="stylesheet" href="../style/principal.css" type="text/css" />
         <link rel="stylesheet" href="../style/structDefault.css" type="text/css" />
+        <link rel="stylesheet" href="../style/pesquisaAmigos.css" type="text/css" />
     </head>
     <body>
         <?php
@@ -23,25 +25,39 @@ require_once './StructDefault.php';
         ?>
 
         <div id="site">
-            <div id="esquerda">
-                <div id="menu">
-                    <ul>
-                        <li><a href="principal.php">Perfil</a></li>
-                        <li><a href="publicacao.php">Publicações</a></li>
-                        <li><a href="mensagem.php">Mensagens</a></li>
-                        <li><a href="amigo.php">Amigos</a></li>
-                        <li><a href="solicitacao.php">Solicitações</a></li>
-                    </ul>
-                </div>
-            </div>
+            <?php
+            echo StructDefault::createMenu();
+            ?>
 
             <div id="direita">
-                <p>amigo</p>
-            </div>
+                <br />
+                <h1>Amigos</h1><br /><hr />
+                <?php
+                $controller = new ControllerPrincipal();
 
-            <div id="rodape">
-                <p>&copy;Copyright VulpixEX.com 2013 - Todos os direitos reservados.</p>
-            </div>
+                $idpessoa = -1;
+
+                if (isset($_SESSION['idpessoa_logado'])) {
+                    $idpessoa = $_SESSION['idpessoa_logado'];
+                }
+
+                $amigos = $controller->mostrarAmigos($idpessoa);
+                $i = 0;
+                while ($i < ModelConexao::totalRegistroFiltrados()) {
+                    echo "<div id='amigos'>";
+                    echo "<ul>";
+                    echo "<li><a href='perfilAmigo.php?id=",$amigos[$i]->getIdpessoaAmigo(), "'>", $amigos[$i]->getNomeAmigo(), "</a></li>";
+                    echo "</ul>";
+                    echo "</div>";
+
+                    $i++;
+                }
+                ?>
+            <hr /></div>
+
+            <?php
+            echo StructDefault::createFooter();
+            ?>            
         </div>
 
     </body>

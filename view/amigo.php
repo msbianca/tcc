@@ -42,18 +42,22 @@ require_once '../controller/ControllerPrincipal.php';
                 }
 
                 $amigos = $controller->mostrarAmigos($idpessoa);
-                $i = 0;
-                while ($i < ModelConexao::totalRegistroFiltrados()) {
-                    echo "<div id='amigos'>";
-                    echo "<ul>";
-                    echo "<li><a href='perfilAmigo.php?id=",$amigos[$i]->getIdpessoaAmigo(), "'>", $amigos[$i]->getNomeAmigo(), "</a></li>";
-                    echo "</ul>";
-                    echo "</div>";
+                if (ModelConexao::totalRegistroFiltrados() == 0) {
+                    echo "<br /><span style=color:red;font-size:1.3em;>~~> Você não tem nenhum amigo em sua rede <~~</span><br /><br />";
+                } else {
+                    $i = 0;
+                    while ($i < ModelConexao::totalRegistroFiltrados()) {
+                        echo "<div id='amigos'>";
+                        echo "<ul>";
+                        echo "<li><a href='perfilAmigo.php?id=", $amigos[$i]->getIdpessoaAmigo(), "'>", $amigos[$i]->getNomeAmigo(), "</a></li>";
+                        echo "</ul>";
+                        echo "</div>";
 
-                    $i++;
+                        $i++;
+                    }
                 }
                 ?>
-            <hr /></div>
+                <hr /></div>
 
             <?php
             echo StructDefault::createFooter();

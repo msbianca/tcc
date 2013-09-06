@@ -5,7 +5,7 @@ session_start();
   //echo $_COOKIE["connectOn"];
 //}
 
-require_once './StructDefault.php';
+require_once './StructDefault.class.php';
 ?>
 ﻿<!doctype html>
 <html lang="pt-br">

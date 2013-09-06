@@ -23,8 +23,7 @@ class ControllerPrincipal {
         }
 
 //utiliza uma função para validar os dados digitados
-        $result = ModelConexao::executarFiltro("p.idpessoa, p.nome, p.sobrenome, p.data_nascimento, p.login, p.email, 
-                                                p.auto_definicao, p.total_amigos", "pessoa p", "(p.login = '$login') and (p.senha = '$password')");
+        $result = ModelConexao::executarFiltro("p.idpessoa", "pessoa p", "(p.login = '$login') and (p.senha = '$password')");
         if (ModelConexao::totalRegistroFiltrados() == 1) {
             $row = $result->fetch_object();
             $_SESSION['idpessoa_logado'] = $row->idpessoa;
@@ -100,7 +99,7 @@ class ControllerPrincipal {
             }
         }
 
-        if (ModelConexao::gravarDados("NOME, SOBRENOME, DATA_NASCIMENTO, LOGIN, SENHA, AUTO_DEFINICAO, EMAIL, TOTAL_AMIGOS", "pessoa", "'$nome', '$sobrenome', '$data_nasc', '$login', '$senha', '$bio', '$email', 0")) {
+        if (ModelConexao::gravarDados("NOME, SOBRENOME, DATA_NASCIMENTO, LOGIN, SENHA, AUTO_DEFINICAO, EMAIL", "pessoa", "'$nome', '$sobrenome', '$data_nasc', '$login', '$senha', '$bio', '$email'")) {
             $_SESSION['msg_error_fields_null'] = "";
             echo "<script>alert('Cadastro realizado com sucesso...');window.location='../View/principal.php'</script>";
         } else {
@@ -151,7 +150,7 @@ class ControllerPrincipal {
 
     public function mostrarInfoPerfil($idpessoa) {
         $result = ModelConexao::executarFiltro("p.idpessoa, p.nome, p.sobrenome, p.data_nascimento, p.login, p.email, 
-                                                p.auto_definicao, p.total_amigos", "pessoa p", "(p.idpessoa = '$idpessoa')");
+                                                p.auto_definicao, (select count(am.idamigo) from amigo am where (am.idpessoa = '$idpessoa')) total_amigos", "pessoa p", "(p.idpessoa = '$idpessoa')");
         $row = $result->fetch_object();
 
         return new Pessoa($row->idpessoa, $row->nome, $row->sobrenome, $row->data_nascimento, $row->login, $row->email, $row->auto_definicao, $row->total_amigos);
@@ -236,6 +235,36 @@ class ControllerPrincipal {
             return $result_array;
         } else {
             return null;
+        }
+    }
+
+    public function verificarAmizade($idpessoaPesquisa) {
+        $idpessoa = -1;
+
+        if (isset($_SESSION['idpessoa_logado'])) {
+            $idpessoa = $_SESSION['idpessoa_logado'];
+        }
+
+        ModelConexao::executarFiltro("a.idamigo", "amigo a", "((a.IDPESSOA = '$idpessoa') AND (a.idpessoa_amigo = '$idpessoaPesquisa'))");
+        
+        if (ModelConexao::totalRegistroFiltrados() > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    
+    public function adicionarAmigo($idamigo){
+        $idpessoa = -1;
+
+        if (isset($_SESSION['idpessoa_logado'])) {
+            $idpessoa = $_SESSION['idpessoa_logado'];
+        }
+        
+        if (ModelConexao::gravarDados("IDPESSOA, IDPESSOA_AMIGO", "AMIGO", "'$idpessoa', '$idamigo'")) {
+            echo "<script>alert('Amigo adicionado com sucesso...');window.location='../View/perfilAmigo.php?id=$idamigo'</script>";
+        } else {
+            echo "<script>alert('Erro ao adicionar amigo...');window.location='../View/perfilAmigo.php?id=$idamigo'</script>";
         }
     }
 

@@ -54,6 +54,12 @@ require_once '../controller/ControllerPrincipal.php';
                 echo '<br />';
                 echo "<h2>Bio: </h2><span style='font-size:1.5em;color: black;'>", $pessoa->getAutoDefinicao(), "</span>";
 
+                $ehAmigos = $controller->verificarAmizade($idpessoa);
+                
+                if (!$ehAmigos) {
+                    echo "<br /><br /><br /><span style='background:#CCC;font-size:1.5em;color: blue;font-weight:bold;'><a href='../Controller/adicionarAmigo.php?id=$idpessoa'> Adicionar Amigo </a></span>";
+                }
+
                 //mostra publicações
                 echo "<br /><br /><br /><hr /><br /><h1>Publicações:</h1><br />";
                 $publicacao = $controller->mostrarPublicacoes($idpessoa);

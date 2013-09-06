@@ -40,7 +40,7 @@ require_once '../controller/ControllerPrincipal.php';
                 <div id="entradaDados">
                     <br />
                     <h1>Publicar Conteúdo</h1>
-                    <form name="publicacoes" action="../controller/publicarMensagem.php" method="POST">
+                    <form name="publicacoes" action="../controller/publicarConteudo.php" method="POST">
                         <textarea maxlength="200" name="publicacao" required="required" cols="50" rows="3" style="width: 480px; margin: 2px 0px; height: 93px;"></textarea><br />
                         <input type="submit" value="  Publicar  ">
                     </form>

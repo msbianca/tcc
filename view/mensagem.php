@@ -8,6 +8,7 @@ if (!isset($_SESSION['login'])) {
 }
 
 require_once './StructDefault.php';
+require_once '../controller/ControllerPrincipal.php';
 ?>
 <!doctype html>
 <html lang="pt-br">
@@ -36,7 +37,59 @@ require_once './StructDefault.php';
             </div>
 
             <div id="direita">
-                <p>mensagem</p>
+                <br />
+                <h1>Enviar Mensagem</h1><br />
+                <form name="publicacoes" action="../controller/publicarMensagem.php" method="POST">
+                    <?php
+                    $controller = new ControllerPrincipal();
+
+                    $idpessoa = -1;
+
+                    if (isset($_SESSION['idpessoa_logado'])) {
+                        $idpessoa = $_SESSION['idpessoa_logado'];
+                    }
+
+                    $amigos = $controller->mostrarAmigos($idpessoa);
+                    $i = 0;
+
+                    echo "<select name='amigo' required='required'>";
+                    while ($i < ModelConexao::totalRegistroFiltrados()) {
+                        echo "<option value=", $amigos[$i]->getIdpessoaAmigo(), ">", $amigos[$i]->getNomeAmigo(), "</option>";
+                        $i++;
+                    }
+                    echo "</select>";
+                    ?>
+                    <br /><br />
+                    <textarea maxlength="200" name="mensagem" required="required" cols="50" rows="3" style="width: 480px; margin: 2px 0px; height: 93px;"></textarea><br />
+                    <input type="submit" value="  Enviar  ">
+                </form>
+                <br /><br />
+                <?php
+                $inc = 0;
+                $tipoMensagem = 'Enviadas';
+                $mensagemReceb = false;
+                while ($inc < 2) {
+                    echo "<h2>Mensagens $tipoMensagem</h2><br />";
+                    $mensagens = $controller->mostrarMensagens($idpessoa, $mensagemReceb);
+                    $i = 0;
+                    while ($i < ModelConexao::totalRegistroFiltrados()) {
+                        echo "<div style='width:700px; height: 44px; overflow: auto;'>";
+                        echo "<table border='0'>";
+                        echo "<tr>";
+                        echo "<td align='center' style=background-color:silver;color:black;font-size:1.3em;font-weight:bold;> ", date('d/m/y H:m:s', strtotime($mensagens[$i]->getDataHora())), " </td>";
+                        echo "<td align='center' style=background-color:silver;color:black;font-size:1.3em;font-weight:bold;> ", $mensagens[$i]->getNomePessoa(), " </td>";
+                        echo "<td align='center' style=background-color:silver;color:black;font-size:1.5em;> ", $controller->montarLink($mensagens[$i]->getMensagem()), " </td>";
+                        echo "</tr>";
+                        echo "</table>";
+                        echo "</div>";
+
+                        $i++;
+                    }
+                    $tipoMensagem = 'Recebidas';
+                    $mensagemReceb = true;
+                    $inc++;
+                }
+                ?>
             </div>
 
             <div id="rodape">

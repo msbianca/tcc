@@ -3,6 +3,8 @@
 require_once '../model/ModelConexao.php';
 require_once '../model/Pessoa.class.php';
 require_once '../model/Publicacao.class.php';
+require_once '../model/Mensagem.class.php';
+require_once '../model/Amigo.class.php';
 
 class ControllerPrincipal {
 
@@ -106,7 +108,7 @@ class ControllerPrincipal {
         }
     }
 
-    public function publicarMensagem() {
+    public function publicarConteudo() {
         if (isset($_POST['publicacao'])) {
             $publicacao = $_POST['publicacao'];
         }
@@ -118,11 +120,34 @@ class ControllerPrincipal {
         $data = date('Y-m-d H:i:s');
 
         if (ModelConexao::gravarDados("IDPESSOA, DATA_HORA, PUBLICACAO", "publicacao", "'$idpessoa', '$data', '$publicacao'")) {
-            echo "<script>alert('Mensagem publicada com sucesso...');window.location='../View/publicacao.php'</script>";
+            echo "<script>alert('Conteúdo publicado com sucesso...');window.location='../View/publicacao.php'</script>";
         } else {
-            echo "<script>alert('Erro ao publicadar mensagem...');window.location='../View/publicacao.php'</script>";
+            echo "<script>alert('Erro ao publicar conteúdo...');window.location='../View/publicacao.php'</script>";
         }
     }
+    
+    public function publicarMensagem() {
+        if (isset($_POST['amigo'])) {
+            $idpessoa_amigo = $_POST['amigo'];
+        }
+        
+        if (isset($_POST['mensagem'])) {
+            $mensagem = $_POST['mensagem'];
+        }
+        
+        $idpessoa = -1;
+
+        if (isset($_SESSION['idpessoa_logado'])) {
+            $idpessoa = $_SESSION['idpessoa_logado'];
+        }
+        $data = date('Y-m-d H:i:s');
+
+        if (ModelConexao::gravarDados("IDPESSOA_ENVIO, IDPESSOA_RECEB, DATA_HORA, MENSAGEM", "mensagem", "'$idpessoa', '$idpessoa_amigo', '$data', '$mensagem'")) {
+            echo "<script>alert('Mensagem enviada com sucesso...');window.location='../View/mensagem.php'</script>";
+        } else {
+            echo "<script>alert('Erro ao enviar mensagem...');window.location='../View/mensagem.php'</script>";
+        }
+    }    
 
     public function mostrarInfoPerfil($idpessoa) {
         $result = ModelConexao::executarFiltro("p.idpessoa, p.nome, p.sobrenome, p.data_nascimento, p.login, p.email, 
@@ -148,6 +173,52 @@ class ControllerPrincipal {
             return null;
         }
     }
+
+    public function mostrarMensagens($idpessoa, $mensReceb) {
+        if ($mensReceb == true) {
+            $mensReceb = 'm.idpessoa_receb';
+            $idjoinPessoa = 'm.idpessoa_envio';
+        } else {
+            $mensReceb = 'm.idpessoa_envio';
+            $idjoinPessoa = 'm.idpessoa_receb';
+        }
+        
+        $result = ModelConexao::executarFiltro("m.idmensagem, m.data_hora, m.mensagem, p.nome, p.sobrenome", 
+                                               "mensagem m inner join pessoa p on (p.idpessoa = $idjoinPessoa)", 
+                                               "($mensReceb = '$idpessoa') order by m.data_hora desc");
+
+        $result_array;
+        $i = 0;
+
+        if (ModelConexao::totalRegistroFiltrados() > 0) {
+            while ($row = $result->fetch_object()) {
+                $result_array[$i] = new Mensagem($row->idmensagem, $row->data_hora, $row->mensagem, ($row->nome . " " . $row->sobrenome));
+                $i++;
+            }
+            return $result_array;
+        } else {
+            return null;
+        }
+    }
+    
+    public function mostrarAmigos($idpessoa) {
+        $result = ModelConexao::executarFiltro("a.idamigo, a.idpessoa_amigo, p.nome, p.sobrenome", 
+                                               "amigo a inner join pessoa p on (p.idpessoa = a.idpessoa_amigo)", 
+                                               "(a.idpessoa = '$idpessoa') order by p.nome, p.sobrenome");
+
+        $result_array;
+        $i = 0;
+
+        if (ModelConexao::totalRegistroFiltrados() > 0) {
+            while ($row = $result->fetch_object()) {
+                $result_array[$i] = new Amigo($row->idamigo, $row->idpessoa_amigo, ($row->nome . " " . $row->sobrenome));
+                $i++;
+            }
+            return $result_array;
+        } else {
+            return null;
+        }
+    }    
 
     private function msgErrorFiledsNull($msgError) {
 //registra mensagem de erro 

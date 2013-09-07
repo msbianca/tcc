@@ -8,7 +8,7 @@ if (!isset($_SESSION['login'])) {
 }
 
 require_once './StructDefault.class.php';
-require_once '../controller/ControllerPrincipal.php';
+require_once '../controller/ControllerPrincipal.class.php';
 ?>
 <!doctype html>
 <html lang="pt-br">
@@ -51,7 +51,7 @@ require_once '../controller/ControllerPrincipal.php';
                     $nome = $_POST['nome'];
                 }
                 if ($nome != "/ -1") {
-                    $pesquisa = $controller->procurarAmigos($nome);
+                    $pesquisa = $controller->procurarPessoas($nome);
                     if (ModelConexao::totalRegistroFiltrados() == 0) {
                         echo "<h2 style=color:red;>~~> Nenhuma pessoa encontrada com a palavra: '$nome' <~~</h2><br /><br />";
                     } else {

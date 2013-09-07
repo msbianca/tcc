@@ -1,9 +1,11 @@
 <?php
 session_start();
 
-//if (!isset($_COOKIE["connectOn"])){
-  //echo $_COOKIE["connectOn"];
-//}
+if (isset($_SESSION['login'])) {
+    //há usuário logado
+
+    header("Location: ./principal.php");
+}
 
 require_once './StructDefault.class.php';
 ?>
@@ -21,7 +23,7 @@ require_once './StructDefault.class.php';
         <?php
         echo StructDefault::createHead("<a href='./cadastro.php'>Criar Conta<a href='./sobre.php'>Sobre</a></a>");
         ?>        
-        
+
         <div id="panelCenter">
             <form method="post" action="../controller/validarLogin.php">
                 <div id="campos">
@@ -30,8 +32,8 @@ require_once './StructDefault.class.php';
                     <input type="text" name="login" maxlength="15" class="inputTxt"/><br /><br />
                     <label><span>Senha</span></label>
                     <input type="password" name="password" maxlength="100" class="inputTxt"/><br /><br />
-                    
-                    <!--<span id="checkbox"><input type="checkbox" name="connectOn"/> Mantenha-me conectado</span>-->
+
+<!--<span id="checkbox"><input type="checkbox" name="connectOn"/> Mantenha-me conectado</span>-->
                 </div><br />
                 <input type="submit" class="button" value="Entrar" />
             </form>

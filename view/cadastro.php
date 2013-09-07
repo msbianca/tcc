@@ -1,7 +1,7 @@
 ﻿<?php
 session_start();
 
-require_once './StructDefault.php';
+require_once './StructDefault.class.php';
 ?>
 <!doctype html>
 <html lang="pt-br">
@@ -48,20 +48,20 @@ require_once './StructDefault.php';
 
                         <span>Sua Biografia</span>
                         <input type="text" name="bio" required="required" class="inputTxt"/>                        	
-                        
+
                         <span>E-mail</span> 
                         <input type="email" name="email" required="required" class="inputTxt"/>                        	
                         <div>
-                        <div class="inputFloat">
-                            <span>Login</span> 
-                            <input type="text" name="login" required="required" class="inputTxt"/>   
-                        </div>
+                            <div class="inputFloat">
+                                <span>Login</span> 
+                                <input type="text" name="login" required="required" class="inputTxt"/>   
+                            </div>
 
-                        <div class="inputFloat">
-                            <span>Senha</span> 
-                            <input type="password" name="senha" required="required" class="inputTxt"/>                        	
+                            <div class="inputFloat">
+                                <span>Senha</span> 
+                                <input type="password" name="senha" required="required" class="inputTxt"/>                        	
+                            </div>
                         </div>
-                </div>
 
                         <div>
                             <div class="captchaFloat">

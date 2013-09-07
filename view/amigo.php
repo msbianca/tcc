@@ -8,7 +8,7 @@ if (!isset($_SESSION['login'])) {
 }
 
 require_once './StructDefault.class.php';
-require_once '../controller/ControllerPrincipal.php';
+require_once '../controller/ControllerPrincipal.class.php';
 ?>
 <!doctype html>
 <html lang="pt-br">

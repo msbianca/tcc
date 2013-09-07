@@ -8,7 +8,8 @@ if (!isset($_SESSION['login'])) {
 }
 
 require_once './StructDefault.class.php';
-require_once '../controller/ControllerPrincipal.php';
+require_once '../controller/ControllerPrincipal.class.php';
+require_once '../util/Util.class.php';
 ?>
 <!doctype html>
 <html lang="pt-br">
@@ -73,7 +74,7 @@ require_once '../controller/ControllerPrincipal.php';
                             echo "<tr>";
                             echo "<td align='center' style=background-color:silver;color:black;font-size:1.3em;font-weight:bold;> ", date('d/m/y H:m:s', strtotime($mensagens[$i]->getDataHora())), " </td>";
                             echo "<td align='center' style=background-color:silver;color:black;font-size:1.3em;font-weight:bold;><a href='perfilAmigo.php?id=", $mensagens[$i]->getIdpessoa(), "'> ", $mensagens[$i]->getNomePessoa(), " </a></td>";
-                            echo "<td align='center' style=background-color:silver;color:black;font-size:1.5em;> ", $controller->montarLink($mensagens[$i]->getMensagem()), " </td>";
+                            echo "<td align='center' style=background-color:silver;color:black;font-size:1.5em;> ", Util::montarLink($mensagens[$i]->getMensagem()), " </td>";
                             echo "</tr>";
                             echo "</table>";
                             echo "</div>";

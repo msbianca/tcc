@@ -1,11 +1,15 @@
 <?php
 
+/**
+ * Classe Model de Conexão
+ *
+ * @author aLeX
+ */
 class ModelConexao {
 
     private static $instance; //instancia de ModelConexao;
     private $bd_conexao;
     private $totalRegistros;
-    private $pessoaLogada;
 
     private function __construct() {
         $this->bd_conexao = new mysqli("localhost", "root", "", "social_network");
@@ -25,7 +29,7 @@ class ModelConexao {
     public static function gravarDados($campos, $tabela, $valores) {
         //obtem a instancia atual
         $instance = self::getInstance();
-        
+
         if (!mysqli_query($instance->bd_conexao, "insert into $tabela ($campos) values ($valores)")) {
 //            die('Erro: ' . mysqli_error($instance->bd_conexao));
             return false;
@@ -39,7 +43,7 @@ class ModelConexao {
         $instance = self::getInstance();
 
         $result = $instance->bd_conexao->query("select $campos from $tabela where $condicao");
-        
+
         $instance->totalRegistros = $result->num_rows;
         if ($result === FALSE) {
             echo "Erro na consulta... " . $instance->bd_conexao->error;
@@ -48,28 +52,11 @@ class ModelConexao {
         return $result;
     }
 
-    /**
-     *       Conta quantos registros foram encontrados
-     */
     public static function totalRegistroFiltrados() {
         //obtem a instancia atual
         $instance = self::getInstance();
 
         return $instance->totalRegistros;
-    }
-    
-    public static function setPessoaLogada($pessoa){
-        //obtem a instancia atual
-        $instance = self::getInstance();
-        
-        $instance->pessoaLogada = $pessoa;
-    }
-        
-    public static function getPessoaLogada(){
-        //obtem a instancia atual
-        $instance = self::getInstance();
-        
-        return $instance->pessoaLogada;
     }
 
     private function verificaErroConexao() {

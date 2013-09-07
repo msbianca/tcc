@@ -8,7 +8,8 @@ if (!isset($_SESSION['login'])) {
 }
 
 require_once './StructDefault.class.php';
-require_once '../controller/ControllerPrincipal.php';
+require_once '../controller/ControllerPrincipal.class.php';
+require_once '../util/Util.class.php';
 ?>
 <!doctype html>
 <html lang="pt-br">
@@ -17,6 +18,7 @@ require_once '../controller/ControllerPrincipal.php';
         <title>VulpixES.com - Perfil</title>
         <link rel="stylesheet" href="../style/principal.css" type="text/css" />
         <link rel="stylesheet" href="../style/structDefault.css" type="text/css" />
+        <link rel="stylesheet" href="../style/pesquisaAmigos.css" type="text/css" />        
     </head>
     <body>
         <?php
@@ -55,7 +57,7 @@ require_once '../controller/ControllerPrincipal.php';
                 echo "<h2>Bio: </h2><span style='font-size:1.5em;color: black;'>", $pessoa->getAutoDefinicao(), "</span>";
 
                 $ehAmigos = $controller->verificarAmizade($idpessoa);
-                
+
                 if (!$ehAmigos) {
                     echo "<br /><br /><br /><span style='background:#CCC;font-size:1.5em;color: blue;font-weight:bold;'><a href='../Controller/adicionarAmigo.php?id=$idpessoa'> Adicionar Amigo </a></span>";
                 }
@@ -72,7 +74,7 @@ require_once '../controller/ControllerPrincipal.php';
                         echo "<table border='0'>";
                         echo "<tr>";
                         echo "<td align='center' style=background-color:silver;color:black;font-size:1.3em;font-weight:bold;> ", date('d/m/y H:m:s', strtotime($publicacao[$i]->getDataHora())), " </td>";
-                        echo "<td align='center' style=background-color:silver;color:black;font-size:1.5em;> ", $controller->montarLink($publicacao[$i]->getPublicacao()), " </td>";
+                        echo "<td align='center' style=background-color:silver;color:black;font-size:1.5em;> ", Util::montarLink($publicacao[$i]->getPublicacao()), " </td>";
                         echo "</tr>";
                         echo "</table>";
                         echo "</div>";
@@ -84,7 +86,22 @@ require_once '../controller/ControllerPrincipal.php';
 
                 //amigos em comum
                 echo "<h1>Amigos em comum:</h1><br />";
-                echo "<span style=color:red;font-size:1.3em;>~~> Nenhum amigo em comum <~~</span><br /><br />";
+                $amigosEmComum = $controller->buscarAmigosEmComum($idpessoa);
+                if (ModelConexao::totalRegistroFiltrados() == 0) {
+                    echo "<span style=color:red;font-size:1.3em;>~~> Nenhum amigo em comum <~~</span><br /><br />";
+                } else {
+                    echo "<h2 style=color:red;>Total de amigos em comum: ", ModelConexao::totalRegistroFiltrados(), " pessoa(s):</h2><br />";
+                    $i = 0;
+                    while ($i < ModelConexao::totalRegistroFiltrados()) {
+                        echo "<div id='amigos'>";
+                        echo "<ul>";
+                        echo "<li><a href='perfilAmigo.php?id=", $amigosEmComum[$i]->getIdpessoa(), "'>", $amigosEmComum[$i]->getNome() . " " . $amigosEmComum[$i]->getSobrenome(), "</a></li>";
+                        echo "</ul>";
+                        echo "</div>";
+
+                        $i++;
+                    }
+                }
                 echo "<hr /><br />";
                 ?>          
             </div>

@@ -1,16 +1,12 @@
 <?php
 
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 /**
- * Description of Amigo
+ * Classe Amigo
  *
  * @author aLeX
  */
 class Amigo {
+
     private $idamigo;
     private $idpessoa_amigo;
     private $nomeAmigo;
@@ -24,7 +20,7 @@ class Amigo {
     public function getIdamigo() {
         return $this->idamigo;
     }
-    
+
     public function getIdpessoaAmigo() {
         return $this->idpessoa_amigo;
     }
@@ -32,6 +28,7 @@ class Amigo {
     public function getNomeAmigo() {
         return $this->nomeAmigo;
     }
+
 }
 
 ?>

@@ -1,12 +1,7 @@
 <?php
 
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 /**
- * Description of Mensagem
+ * Classe Mensagem
  *
  * @author aLeX
  */
@@ -37,11 +32,11 @@ class Mensagem {
     public function getMensagem() {
         return $this->mensagem;
     }
-    
+
     public function getIdpessoa() {
         return $this->idpessoa;
     }
-    
+
     public function getNomePessoa() {
         return $this->nomePessoa;
     }

@@ -1,12 +1,7 @@
 <?php
 
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 /**
- * Description of structDefault
+ * Classe StructDefault - Cria a estrutura do site
  *
  * @author aLeX
  */
@@ -25,13 +20,17 @@ class StructDefault {
     }
 
     public static function createHead($itensMenu) {
-//obtem a instancia atual
-//        self::getInstance();
+        if (!isset($_SESSION['login'])) {
+            //não há usuário logado
+            $link = '../index.php';
+        } else {
+            $link = 'principal.php';
+        }
 
         return "<div id='topo'>
 
             <div class='cAlign'>
-                <a href='../index.php'><img src='../Images/logo.png' alt='VulpixEx.com' /> </a><span>$itensMenu</span>
+                <a href='$link'><img src='../Images/logo.png' alt='VulpixEx.com' /> </a><span>$itensMenu</span>
             </div>
 
         </div>";

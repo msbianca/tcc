@@ -1,11 +1,16 @@
 <?php
 
-require_once '../model/ModelConexao.php';
+require_once '../model/ModelConexao.class.php';
 require_once '../model/Pessoa.class.php';
 require_once '../model/Publicacao.class.php';
 require_once '../model/Mensagem.class.php';
 require_once '../model/Amigo.class.php';
 
+/**
+ * Classe Controller
+ *
+ * @author aLeX
+ */
 class ControllerPrincipal {
 
     public function __construct() {
@@ -28,10 +33,6 @@ class ControllerPrincipal {
             $row = $result->fetch_object();
             $_SESSION['idpessoa_logado'] = $row->idpessoa;
 
-//cria cookie caso é para ficar conectado
-//            if ((isset($_POST['connectOn'])) && (isset($_COOKIE["connectOn"]))) {
-//              setcookie("connectOn", "true", time() + 3600);
-//        }
 //registra usuário
             $_SESSION['login'] = $login;
 //registra data login
@@ -111,11 +112,7 @@ class ControllerPrincipal {
         if (isset($_POST['publicacao'])) {
             $publicacao = $_POST['publicacao'];
         }
-        $idpessoa = -1;
-
-        if (isset($_SESSION['idpessoa_logado'])) {
-            $idpessoa = $_SESSION['idpessoa_logado'];
-        }
+        $idpessoa = $this->getIdPessoaLogado();
         $data = date('Y-m-d H:i:s');
 
         if (ModelConexao::gravarDados("IDPESSOA, DATA_HORA, PUBLICACAO", "publicacao", "'$idpessoa', '$data', '$publicacao'")) {
@@ -134,11 +131,7 @@ class ControllerPrincipal {
             $mensagem = $_POST['mensagem'];
         }
 
-        $idpessoa = -1;
-
-        if (isset($_SESSION['idpessoa_logado'])) {
-            $idpessoa = $_SESSION['idpessoa_logado'];
-        }
+        $idpessoa = $this->getIdPessoaLogado();
         $data = date('Y-m-d H:i:s');
 
         if (ModelConexao::gravarDados("IDPESSOA_ENVIO, IDPESSOA_RECEB, DATA_HORA, MENSAGEM", "mensagem", "'$idpessoa', '$idpessoa_amigo', '$data', '$mensagem'")) {
@@ -215,12 +208,8 @@ class ControllerPrincipal {
         }
     }
 
-    public function procurarAmigos($nome) {
-        $idpessoa = -1;
-
-        if (isset($_SESSION['idpessoa_logado'])) {
-            $idpessoa = $_SESSION['idpessoa_logado'];
-        }
+    public function procurarPessoas($nome) {
+        $idpessoa = $this->getIdPessoaLogado();
 
         $result = ModelConexao::executarFiltro("p.idpessoa, p.nome, p.sobrenome", "PESSOA P", "((P.IDPESSOA <> '$idpessoa') AND ((P.NOME LIKE '%$nome%') or (P.SOBRENOME LIKE '%$nome%') ) )");
 
@@ -239,33 +228,54 @@ class ControllerPrincipal {
     }
 
     public function verificarAmizade($idpessoaPesquisa) {
-        $idpessoa = -1;
-
-        if (isset($_SESSION['idpessoa_logado'])) {
-            $idpessoa = $_SESSION['idpessoa_logado'];
-        }
+        $idpessoa = $this->getIdPessoaLogado();
 
         ModelConexao::executarFiltro("a.idamigo", "amigo a", "((a.IDPESSOA = '$idpessoa') AND (a.idpessoa_amigo = '$idpessoaPesquisa'))");
-        
+
         if (ModelConexao::totalRegistroFiltrados() > 0) {
             return true;
         } else {
             return false;
         }
     }
-    
-    public function adicionarAmigo($idamigo){
-        $idpessoa = -1;
 
-        if (isset($_SESSION['idpessoa_logado'])) {
-            $idpessoa = $_SESSION['idpessoa_logado'];
-        }
-        
+    public function adicionarAmigo($idamigo) {
+        $idpessoa = $this->getIdPessoaLogado();
+
         if (ModelConexao::gravarDados("IDPESSOA, IDPESSOA_AMIGO", "AMIGO", "'$idpessoa', '$idamigo'")) {
             echo "<script>alert('Amigo adicionado com sucesso...');window.location='../View/perfilAmigo.php?id=$idamigo'</script>";
         } else {
             echo "<script>alert('Erro ao adicionar amigo...');window.location='../View/perfilAmigo.php?id=$idamigo'</script>";
         }
+    }
+
+    public function buscarAmigosEmComum($idamigo) {
+        $idpessoa = $this->getIdPessoaLogado();
+
+        $result = ModelConexao::executarFiltro("a.idpessoa_amigo, p.nome, p.sobrenome", "amigo a inner join pessoa p on (p.idpessoa = a.idpessoa_amigo)", "a.idpessoa = '$idpessoa' AND EXISTS (SELECT 1 FROM amigo B WHERE B.idpessoa = '$idamigo' AND B.idpessoa_amigo = A.idpessoa_amigo)");
+
+        $result_array;
+        $i = 0;
+
+        if (ModelConexao::totalRegistroFiltrados() > 0) {
+            while ($row = $result->fetch_object()) {
+                $result_array[$i] = new Pessoa($row->idpessoa_amigo, $row->nome, $row->sobrenome, null, null, null, null, null);
+                $i++;
+            }
+            return $result_array;
+        } else {
+            return null;
+        }
+    }
+
+    private function getIdPessoaLogado() {
+        $idpessoa = -1;
+
+        if (isset($_SESSION['idpessoa_logado'])) {
+            $idpessoa = $_SESSION['idpessoa_logado'];
+        }
+
+        return $idpessoa;
     }
 
     private function msgErrorFiledsNull($msgError) {
@@ -274,26 +284,6 @@ class ControllerPrincipal {
 //retorna no cadastro
         header("Location: ../view/cadastro.php");
         exit;
-    }
-
-    function montarLink($texto) {
-        if (!is_string($texto))
-            return $texto;
-
-        $er = "/(http(s)?:\/\/(www|.*?\/)?((\.|\/)?[a-zA-Z0-9&%_?=-]+)+)/i";
-        preg_match_all($er, $texto, $match);
-
-        foreach ($match[0] as $link) {
-            $link = strtolower($link);
-            $link_len = strlen($link);
-
-            //troca "&" por "&amp;", tornando o link válido pela W3C
-            $web_link = str_replace("&", "&amp;", $link);
-
-            $texto = str_ireplace($link, "<a href=\"" . $web_link . "\" target=\"_blank\" title=\"" . $web_link . "\" rel=\"nofollow\">" . (($link_len > 60) ? substr($web_link, 0, 25) . "..." . substr($web_link, -15) : $web_link) . "</a>", $texto);
-        }
-
-        return $texto;
     }
 
 }

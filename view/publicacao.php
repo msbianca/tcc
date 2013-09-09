@@ -21,7 +21,7 @@ require_once '../util/Util.class.php';
     </head>
     <body>
         <?php
-        echo StructDefault::createHead("<a href='../Controller/encerrarSessao.php'>Sair</a>");
+        echo StructDefault::createHead("<a href='../controller/encerrarSessao.php'>Sair</a>");
         ?>
 
         <div id="site">

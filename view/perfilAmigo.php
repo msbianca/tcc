@@ -22,7 +22,7 @@ require_once '../util/Util.class.php';
     </head>
     <body>
         <?php
-        echo StructDefault::createHead("<a href='../Controller/encerrarSessao.php'>Sair</a>");
+        echo StructDefault::createHead("<a href='../controller/encerrarSessao.php'>Sair</a>");
         ?>
 
         <div id="site">
@@ -59,7 +59,7 @@ require_once '../util/Util.class.php';
                 $ehAmigos = $controller->verificarAmizade($idpessoa);
 
                 if (!$ehAmigos) {
-                    echo "<br /><br /><br /><span style='background:#CCC;font-size:1.5em;color: blue;font-weight:bold;'><a href='../Controller/adicionarAmigo.php?id=$idpessoa'> Adicionar Amigo </a></span>";
+                    echo "<br /><br /><br /><span style='background:#CCC;font-size:1.5em;color: blue;font-weight:bold;'><a href='../controller/adicionarAmigo.php?id=$idpessoa'> Adicionar Amigo </a></span>";
                 }
 
                 //mostra publicações

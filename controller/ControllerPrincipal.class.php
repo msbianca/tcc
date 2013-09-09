@@ -100,9 +100,9 @@ class ControllerPrincipal {
             }
         }
 
-        if (ModelConexao::gravarDados("NOME, SOBRENOME, DATA_NASCIMENTO, LOGIN, SENHA, AUTO_DEFINICAO, EMAIL", "pessoa", "'$nome', '$sobrenome', '$data_nasc', '$login', '$senha', '$bio', '$email'")) {
+        if (ModelConexao::gravarDados("nome, sobrenome, data_nascimento, login, senha, auto_definicao, email", "pessoa", "'$nome', '$sobrenome', '$data_nasc', '$login', '$senha', '$bio', '$email'")) {
             $_SESSION['msg_error_fields_null'] = "";
-            echo "<script>alert('Cadastro realizado com sucesso...');window.location='../View/principal.php'</script>";
+            echo "<script>alert('Cadastro realizado com sucesso...');window.location='../view/principal.php'</script>";
         } else {
             $this->msgErrorFiledsNull("Erro ao efetuar cadastro...");
         }
@@ -115,10 +115,10 @@ class ControllerPrincipal {
         $idpessoa = $this->getIdPessoaLogado();
         $data = date('Y-m-d H:i:s');
 
-        if (ModelConexao::gravarDados("IDPESSOA, DATA_HORA, PUBLICACAO", "publicacao", "'$idpessoa', '$data', '$publicacao'")) {
-            echo "<script>alert('Conteúdo publicado com sucesso...');window.location='../View/publicacao.php'</script>";
+        if (ModelConexao::gravarDados("idpessoa, data_hora, publicacao", "publicacao", "'$idpessoa', '$data', '$publicacao'")) {
+            echo "<script>alert('Conteúdo publicado com sucesso...');window.location='../view/publicacao.php'</script>";
         } else {
-            echo "<script>alert('Erro ao publicar conteúdo...');window.location='../View/publicacao.php'</script>";
+            echo "<script>alert('Erro ao publicar conteúdo...');window.location='../view/publicacao.php'</script>";
         }
     }
 
@@ -134,10 +134,10 @@ class ControllerPrincipal {
         $idpessoa = $this->getIdPessoaLogado();
         $data = date('Y-m-d H:i:s');
 
-        if (ModelConexao::gravarDados("IDPESSOA_ENVIO, IDPESSOA_RECEB, DATA_HORA, MENSAGEM", "mensagem", "'$idpessoa', '$idpessoa_amigo', '$data', '$mensagem'")) {
-            echo "<script>alert('Mensagem enviada com sucesso...');window.location='../View/mensagem.php'</script>";
+        if (ModelConexao::gravarDados("idpessoa_envio, idpessoa_receb, data_hora, mensagem", "mensagem", "'$idpessoa', '$idpessoa_amigo', '$data', '$mensagem'")) {
+            echo "<script>alert('Mensagem enviada com sucesso...');window.location='../view/mensagem.php'</script>";
         } else {
-            echo "<script>alert('Erro ao enviar mensagem...');window.location='../View/mensagem.php'</script>";
+            echo "<script>alert('Erro ao enviar mensagem...');window.location='../view/mensagem.php'</script>";
         }
     }
 
@@ -211,7 +211,7 @@ class ControllerPrincipal {
     public function procurarPessoas($nome) {
         $idpessoa = $this->getIdPessoaLogado();
 
-        $result = ModelConexao::executarFiltro("p.idpessoa, p.nome, p.sobrenome", "PESSOA P", "((P.IDPESSOA <> '$idpessoa') AND ((P.NOME LIKE '%$nome%') or (P.SOBRENOME LIKE '%$nome%') ) )");
+        $result = ModelConexao::executarFiltro("p.idpessoa, p.nome, p.sobrenome", "pessoa p", "((p.idpessoa <> '$idpessoa') and ((p.nome like '%$nome%') or (p.sobrenome like '%$nome%') ) )");
 
         $result_array;
         $i = 0;
@@ -230,7 +230,7 @@ class ControllerPrincipal {
     public function verificarAmizade($idpessoaPesquisa) {
         $idpessoa = $this->getIdPessoaLogado();
 
-        ModelConexao::executarFiltro("a.idamigo", "amigo a", "((a.IDPESSOA = '$idpessoa') AND (a.idpessoa_amigo = '$idpessoaPesquisa'))");
+        ModelConexao::executarFiltro("a.idamigo", "amigo a", "((a.idpessoa = '$idpessoa') and (a.idpessoa_amigo = '$idpessoaPesquisa'))");
 
         if (ModelConexao::totalRegistroFiltrados() > 0) {
             return true;
@@ -242,17 +242,17 @@ class ControllerPrincipal {
     public function adicionarAmigo($idamigo) {
         $idpessoa = $this->getIdPessoaLogado();
 
-        if (ModelConexao::gravarDados("IDPESSOA, IDPESSOA_AMIGO", "AMIGO", "'$idpessoa', '$idamigo'")) {
-            echo "<script>alert('Amigo adicionado com sucesso...');window.location='../View/perfilAmigo.php?id=$idamigo'</script>";
+        if (ModelConexao::gravarDados("idpessoa, idpessoa_amigo", "amigo", "'$idpessoa', '$idamigo'")) {
+            echo "<script>alert('Amigo adicionado com sucesso...');window.location='../view/perfilAmigo.php?id=$idamigo'</script>";
         } else {
-            echo "<script>alert('Erro ao adicionar amigo...');window.location='../View/perfilAmigo.php?id=$idamigo'</script>";
+            echo "<script>alert('Erro ao adicionar amigo...');window.location='../view/perfilAmigo.php?id=$idamigo'</script>";
         }
     }
 
     public function buscarAmigosEmComum($idamigo) {
         $idpessoa = $this->getIdPessoaLogado();
 
-        $result = ModelConexao::executarFiltro("a.idpessoa_amigo, p.nome, p.sobrenome", "amigo a inner join pessoa p on (p.idpessoa = a.idpessoa_amigo)", "a.idpessoa = '$idpessoa' AND EXISTS (SELECT 1 FROM amigo B WHERE B.idpessoa = '$idamigo' AND B.idpessoa_amigo = A.idpessoa_amigo)");
+        $result = ModelConexao::executarFiltro("a.idpessoa_amigo, p.nome, p.sobrenome", "amigo a inner join pessoa p on (p.idpessoa = a.idpessoa_amigo)", "a.idpessoa = '$idpessoa' and exists (select 1 from amigo b where b.idpessoa = '$idamigo' and b.idpessoa_amigo = a.idpessoa_amigo)");
 
         $result_array;
         $i = 0;

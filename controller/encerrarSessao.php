@@ -7,5 +7,5 @@ session_start();
 session_destroy();
 
 //volta para pagina de login
-header("Location: ../View/login.php");
+header("Location: ../view/login.php");
 ?>

@@ -12,7 +12,6 @@ class ModelConexao {
     private $totalRegistros;
 
     private function __construct() {
-//        $this->bd_conexao = new mysqli("mysql.hostinger.com.br", "u565838779_es", "software", "u565838779_base");
         $this->bd_conexao = new mysqli("localhost", "root", "", "social_network");
         $this->verificaErroConexao();
     }

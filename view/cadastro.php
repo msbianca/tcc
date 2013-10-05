@@ -11,7 +11,6 @@ require_once './StructDefault.class.php';
         <link rel="stylesheet" href="../style/cadastro.css" type="text/css" />
         <link rel="stylesheet" href="../style/structDefault.css" type="text/css" />
     </head>
-
     <body>
         <?php
         echo StructDefault::createHead("<a href='./cadastro.php'>Criar Conta<a href='./sobre.php'>Sobre</a></a>");
@@ -30,7 +29,7 @@ require_once './StructDefault.class.php';
                 ?>
                 <br /><br />
                 <div id="formulario">
-                    <form name="cadastro" method="post" action="../controller/criarConta.php">
+                    <form name="cadastro" method="post" action="../controller/criarConta.php" onsubmit="verificaCaptcha(this)">
                         <div>
                             <div class="inputFloat">
                                 <span>Nome</span> 

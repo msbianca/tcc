@@ -19,6 +19,16 @@ require_once '../util/Util.class.php';
         <link rel="stylesheet" href="../style/principal.css" type="text/css" />
         <link rel="stylesheet" href="../style/structDefault.css" type="text/css" />
     </head>
+    <script>
+        function contarCaracteres(box, valor, campospan) {
+            var conta = valor - box.length;
+            document.getElementById(campospan).innerHTML = "" + conta + " caracteres restantes";
+            if (box.length >= valor) {
+                document.getElementById(campospan).innerHTML = "Opss.. você não pode mais digitar..";
+                document.getElementById("mensagem").value = document.getElementById("mensagem").value.substr(0, valor);
+            }
+        }
+    </script>
     <body>
         <?php
         echo StructDefault::createHead("<a href='../controller/encerrarSessao.php'>Sair</a>");
@@ -53,7 +63,10 @@ require_once '../util/Util.class.php';
                     echo "</select>";
                     ?>
                     <br /><br />
-                    <textarea maxlength="200" name="mensagem" required="required" cols="50" rows="3" style="width: 480px; margin: 2px 0px; height: 93px;"></textarea><br />
+                    <textarea maxlength="200" name="mensagem" required="required" cols="50" rows="3" 
+                              onkeyup="contarCaracteres(this.value, 200, 'SP_RESTANTE');" 
+                              style="width: 480px; margin: 2px 0px; height: 93px;"></textarea><br />
+                    <span id="SP_RESTANTE" style="font-size: 12px; font-family:Georgia; color: red;"></span><br />
                     <input type="submit" value="  Enviar  ">
                 </form>
                 <br /><br /><hr /><br />

@@ -208,20 +208,40 @@ class ControllerPrincipal {
         }
     }
 
+    private function addPessoaNoXML($document, $id, $nome, $sobrenome) {
+        #criar pessoa
+        $pessoa = $document->createElement("pessoa");
+
+        #criar nó id
+        $idElm = $document->createElement("id", $id);
+
+        #criar nó nome
+        $nomeElm = $document->createElement("nome", $nome);
+
+        #criar nó sobrenome
+        $sobrenomeElm = $document->createElement("sobrenome", $sobrenome);
+
+        $pessoa->appendChild($idElm);
+        $pessoa->appendChild($nomeElm);
+        $pessoa->appendChild($sobrenomeElm);
+
+        return $pessoa;
+    }
+
     public function procurarPessoas($nome) {
         $idpessoa = $this->getIdPessoaLogado();
-
         $result = ModelConexao::executarFiltro("p.idpessoa, p.nome, p.sobrenome", "pessoa p", "((p.idpessoa <> '$idpessoa') and ((p.nome like '%$nome%') or (p.sobrenome like '%$nome%') ) )");
 
-        $result_array;
-        $i = 0;
-
         if (ModelConexao::totalRegistroFiltrados() > 0) {
+            $dom = new DOMDocument("1.0", "ISO-8859-1");
+            $root = $dom->createElement("buscaPessoas");
+
             while ($row = $result->fetch_object()) {
-                $result_array[$i] = new Pessoa($row->idpessoa, $row->nome, $row->sobrenome, null, null, null, null, null, null);
-                $i++;
+                $pessoa = $this->addPessoaNoXML($dom, $row->idpessoa, $row->nome, $row->sobrenome);
+                $root->appendChild($pessoa);
             }
-            return $result_array;
+            $dom->appendChild($root);
+            return $dom->saveXML();
         } else {
             return null;
         }

@@ -19,6 +19,62 @@ require_once '../controller/ControllerPrincipal.class.php';
         <link rel="stylesheet" href="../style/structDefault.css" type="text/css" />
         <link rel="stylesheet" href="../style/pesquisaAmigos.css" type="text/css" />
     </head>
+    <script>
+        function loadXMLDoc($value)
+        {
+            document.getElementById("SP_BUSCA").innerHTML = "";
+            var nome = document.getElementById("nome");
+            if (nome.value == "")
+            {
+                document.getElementById("SP_BUSCA").innerHTML = "";
+                return;
+            }
+            var xmlhttp;
+            var txt, x, xx, yy, zz, i;
+            if (window.XMLHttpRequest)
+            {// code for IE7+, Firefox, Chrome, Opera, Safari
+                xmlhttp = new XMLHttpRequest();
+            }
+            else
+            {// code for IE6, IE5
+                xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+            }
+            xmlhttp.onreadystatechange = function()
+            {
+                document.getElementById('SP_BUSCA').innerHTML = "<h2 style=color:red;>~~> Nenhuma pessoa encontrada com a palavra: " + nome.value + " <~~</h2><br /><br />";
+                if ((xmlhttp.readyState == 4) && (xmlhttp.status == 200))
+                {
+                    txt = "<div id='amigos'><ul>";
+                    x = xmlhttp.responseXML.documentElement.getElementsByTagName("pessoa");
+                    for (i = 0; i < x.length; i++)
+                    {
+                        zz = x[i].getElementsByTagName("id");
+                        xx = x[i].getElementsByTagName("nome");
+                        yy = x[i].getElementsByTagName("sobrenome");
+                        {
+                            try
+                            {
+                                txt = txt + "<li>" +
+                                        "<a href='perfilAmigo.php?id=" + zz[0].firstChild.nodeValue + "'>" +
+                                        xx[0].firstChild.nodeValue + " " + yy[0].firstChild.nodeValue +
+                                        "</a>" +
+                                        "</li>";
+                            }
+                            catch (er)
+                            {
+                                txt = txt + "<li>Erro ao retornar dados</li>";
+                            }
+                        }
+                    }
+                    txt = txt + "</ul></div>";
+                    document.getElementById('SP_BUSCA').innerHTML = txt;
+                }
+            }
+            xmlhttp.open("GET", "../controller/buscarPessoas.php?nome=" + nome.value, true);
+            xmlhttp.send();
+        }
+    </script>
+
     <body>
         <?php
         echo StructDefault::createHead("<a href='../controller/encerrarSessao.php'>Sair</a>");
@@ -32,43 +88,10 @@ require_once '../controller/ControllerPrincipal.class.php';
             <div id="direita">
                 <br />
                 <h1>Procurar Amigos</h1><br />
-                <form name="procurar" action="procurarAmigo.php" method="POST">
-                    <span style=font-size:1.3em;font-weight:bold;>Digite o nome da pessoa: </span>
-                    <input type="text" name="nome" required="required" class="inputTxt"/>
-                    <input type="submit" value="  Pesquisar  ">
-                </form>
+                <span style=font-size:1.3em;font-weight:bold;>Digite o nome da pessoa: </span>
+                <input type="text" id="nome" onkeyup="loadXMLDoc()">
                 <br /><br /><hr /><br />
-                <?php
-                $controller = new ControllerPrincipal();
-                $idpessoa = -1;
-
-                if (isset($_SESSION['idpessoa_logado'])) {
-                    $idpessoa = $_SESSION['idpessoa_logado'];
-                }
-
-                $nome = "/ -1";
-                if (isset($_POST['nome'])) {
-                    $nome = $_POST['nome'];
-                }
-                if ($nome != "/ -1") {
-                    $pesquisa = $controller->procurarPessoas($nome);
-                    if (ModelConexao::totalRegistroFiltrados() == 0) {
-                        echo "<h2 style=color:red;>~~> Nenhuma pessoa encontrada com a palavra: '$nome' <~~</h2><br /><br />";
-                    } else {
-                        echo "<h2 style=color:red;>Encontrado ", ModelConexao::totalRegistroFiltrados(), " pessoa(s):</h2><br />";
-                        $i = 0;
-                        while ($i < ModelConexao::totalRegistroFiltrados()) {
-                            echo "<div id='amigos'>";
-                            echo "<ul>";
-                            echo "<li><a href='perfilAmigo.php?id=", $pesquisa[$i]->getIdpessoa(), "'>", $pesquisa[$i]->getNome() . " " . $pesquisa[$i]->getSobrenome(), "</a></li>";
-                            echo "</ul>";
-                            echo "</div>";
-
-                            $i++;
-                        }
-                    }
-                }
-                ?>          
+                <div id="SP_BUSCA"></div>
             </div>
 
             <?php

@@ -20,7 +20,7 @@ require_once '../controller/ControllerPrincipal.class.php';
         <link rel="stylesheet" href="../style/pesquisaAmigos.css" type="text/css" />
     </head>
     <script>
-        function loadXMLDoc($value)
+        function loadXMLDoc()
         {
             document.getElementById("SP_BUSCA").innerHTML = "";
             var nome = document.getElementById("nome");

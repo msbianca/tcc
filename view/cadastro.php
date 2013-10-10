@@ -11,6 +11,13 @@ require_once './StructDefault.class.php';
         <link rel="stylesheet" href="../style/cadastro.css" type="text/css" />
         <link rel="stylesheet" href="../style/structDefault.css" type="text/css" />
     </head>
+    <script language="javascript">
+        function ConfirmarEnvio(form)
+        {
+            enviar = window.confirm('Confirmar cadastro no VulpixES.com?');
+            (enviar) ? form.submit() : 'return false';
+        }
+    </script>
     <body>
         <?php
         echo StructDefault::createHead("<a href='./cadastro.php'>Criar Conta<a href='./sobre.php'>Sobre</a></a>");
@@ -74,7 +81,7 @@ require_once './StructDefault.class.php';
                         </div>
 
                         <span>&nbsp;</span><!--separar do botao-->
-                        <input type="submit" value="" class="submitCadastro" name="cadastrar" />
+                        <input type="button" value="" class="submitCadastro" name="cadastrar" onClick="ConfirmarEnvio(this.form)"/>
                     </form>
                 </div><!--formulario-->        
 

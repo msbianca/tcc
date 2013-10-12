@@ -36,7 +36,7 @@ require_once './StructDefault.class.php';
                 ?>
                 <br /><br />
                 <div id="formulario">
-                    <form name="cadastro" method="post" action="../controller/criarConta.php" onsubmit="verificaCaptcha(this)">
+                    <form name="cadastro" method="post" action="../controller/criarConta.php" onsubmit="verificaCaptcha(this);">
                         <div>
                             <div class="inputFloat">
                                 <span>Nome</span> 
@@ -81,7 +81,7 @@ require_once './StructDefault.class.php';
                         </div>
 
                         <span>&nbsp;</span><!--separar do botao-->
-                        <input type="button" value="" class="submitCadastro" name="cadastrar" onClick="ConfirmarEnvio(this.form)"/>
+                        <input type="button" value="" class="submitCadastro" name="cadastrar" onClick="ConfirmarEnvio(this.form);"/>
                     </form>
                 </div><!--formulario-->        
 

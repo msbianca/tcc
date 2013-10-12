@@ -1,5 +1,4 @@
 <?php
-//recupera a variável $_SESSION se ela foi definida
 session_start();
 
 if (!isset($_SESSION['login'])) {
@@ -20,17 +19,17 @@ require_once '../controller/ControllerPrincipal.class.php';
         <link rel="stylesheet" href="../style/pesquisaAmigos.css" type="text/css" />
     </head>
     <script>
-        function loadXMLDoc()
+        function searchPeople()
         {
             document.getElementById("SP_BUSCA").innerHTML = "";
             var nome = document.getElementById("nome");
-            if (nome.value == "")
+            if (nome.value === "")
             {
                 document.getElementById("SP_BUSCA").innerHTML = "";
                 return;
             }
             var xmlhttp;
-            var txt, x, xx, yy, zz, i;
+            var resultSearch, xml, xmlNome, xmlSobrenome, xmlId, pos;
             if (window.XMLHttpRequest)
             {// code for IE7+, Firefox, Chrome, Opera, Safari
                 xmlhttp = new XMLHttpRequest();
@@ -41,35 +40,43 @@ require_once '../controller/ControllerPrincipal.class.php';
             }
             xmlhttp.onreadystatechange = function()
             {
-                document.getElementById('SP_BUSCA').innerHTML = "<h2 style=color:red;>~~> Nenhuma pessoa encontrada com a palavra: " + nome.value + " <~~</h2><br /><br />";
-                if ((xmlhttp.readyState == 4) && (xmlhttp.status == 200))
+                if ((xmlhttp.readyState === 4) && (xmlhttp.status === 200))
                 {
-                    txt = "<div id='amigos'><ul>";
-                    x = xmlhttp.responseXML.documentElement.getElementsByTagName("pessoa");
-                    for (i = 0; i < x.length; i++)
+                    try
                     {
-                        zz = x[i].getElementsByTagName("id");
-                        xx = x[i].getElementsByTagName("nome");
-                        yy = x[i].getElementsByTagName("sobrenome");
+                        xml = xmlhttp.responseXML.documentElement.getElementsByTagName("pessoa");
+                    }
+                    catch (error)
+                    {
+                        document.getElementById('SP_BUSCA').innerHTML = "<h2 style=color:red;>~~> Nenhuma pessoa encontrada com a palavra: " +
+                                nome.value + " <~~</h2><br /><br />";
+                    }
+
+                    resultSearch = "<div id='amigos'><ul>";
+                    for (pos = 0; pos < xml.length; pos++)
+                    {
+                        xmlId = xml[pos].getElementsByTagName("id");
+                        xmlNome = xml[pos].getElementsByTagName("nome");
+                        xmlSobrenome = xml[pos].getElementsByTagName("sobrenome");
                         {
                             try
                             {
-                                txt = txt + "<li>" +
-                                        "<a href='perfilAmigo.php?id=" + zz[0].firstChild.nodeValue + "'>" +
-                                        xx[0].firstChild.nodeValue + " " + yy[0].firstChild.nodeValue +
+                                resultSearch = resultSearch + "<li>" +
+                                        "<a href='perfilAmigo.php?id=" + xmlId[0].firstChild.nodeValue + "'>" +
+                                        xmlNome[0].firstChild.nodeValue + " " + xmlSobrenome[0].firstChild.nodeValue +
                                         "</a>" +
                                         "</li>";
                             }
-                            catch (er)
+                            catch (error)
                             {
-                                txt = txt + "<li>Erro ao retornar dados</li>";
+                                resultSearch = resultSearch + "<li>Erro ao retornar dados</li>";
                             }
                         }
                     }
-                    txt = txt + "</ul></div>";
-                    document.getElementById('SP_BUSCA').innerHTML = txt;
+                    resultSearch = resultSearch + "</ul></div>";
+                    document.getElementById('SP_BUSCA').innerHTML = resultSearch;
                 }
-            }
+            };
             xmlhttp.open("GET", "../controller/buscarPessoas.php?nome=" + nome.value, true);
             xmlhttp.send();
         }
@@ -89,7 +96,7 @@ require_once '../controller/ControllerPrincipal.class.php';
                 <br />
                 <h1>Procurar Amigos</h1><br />
                 <span style=font-size:1.3em;font-weight:bold;>Digite o nome da pessoa: </span>
-                <input type="text" id="nome" onkeyup="loadXMLDoc()">
+                <input type="text" id="nome" onkeyup="searchPeople();">
                 <br /><br /><hr /><br />
                 <div id="SP_BUSCA"></div>
             </div>

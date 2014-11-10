@@ -230,9 +230,7 @@ class ControllerPrincipal {
 
     public function procurarPessoas($nome) {
         $idpessoa = $this->getIdPessoaLogado();
-        $result = ModelConexao::executarFiltro("p.idpessoa, p.nome, p.sobrenome", "pessoa p", "((p.idpessoa <> '$idpessoa') and 
-                                                                                                ((p.nome like '%$nome%') or 
-                                                                                                (p.sobrenome like '%$nome%') ) )");
+        $result = ModelConexao::executarFiltro("p.idpessoa, p.nome, p.sobrenome", "pessoa p", "((p.idpessoa <> '$idpessoa') and ((p.nome like '%$nome%') or (p.sobrenome like '%$nome%') ) )");
 
         if (ModelConexao::totalRegistroFiltrados() > 0) {
             $dom = new DOMDocument("1.0", "ISO-8859-1");
